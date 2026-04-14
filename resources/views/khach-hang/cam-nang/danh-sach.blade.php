@@ -81,7 +81,7 @@
 
     @if($danh_sach->hasPages())
     <div style="margin-bottom: 5rem; position: relative; z-index: 10;">
-        {{ $danh_sach->links() }}
+        {{ $danh_sach->links('pagination::bootstrap-4') }}
     </div>
     @endif
 </div>

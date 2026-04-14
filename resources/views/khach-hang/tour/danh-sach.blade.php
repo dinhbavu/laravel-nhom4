@@ -78,82 +78,157 @@
 }
 .btn-filter:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(74,222,128,0.5); }
 
-/* ── 3D Floating Tour Cards ── */
-.tour-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; position: relative; z-index: 10; }
-@media(max-width:1000px) { .tour-grid { grid-template-columns: repeat(2, 1fr); } }
-@media(max-width:580px) { .tour-grid { grid-template-columns: 1fr; } }
+/* ── 3D Floating Tour Cards - Modern V2 ── */
+.tour-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; position: relative; z-index: 10; }
+@media(max-width:1000px) { .tour-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; } }
+@media(max-width:650px) { .tour-grid { grid-template-columns: 1fr; } }
 
 .tour-card-3d {
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 20px;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 24px;
     overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     flex-direction: column;
     height: 100%;
-    transform-style: preserve-3d;
-    perspective: 1000px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.tour-card-3d::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(74,222,128,0.5), rgba(74,222,128,0) 50%, rgba(255,255,255,0.05));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 5;
+    pointer-events: none;
 }
 
 .tour-card-3d:hover {
-    transform: translateY(-10px) rotateX(5deg) rotateY(-2deg);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(74,222,128,0.08);
-    border-color: rgba(74,222,128,0.25);
-    background: rgba(255, 255, 255, 0.07);
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 40px rgba(74,222,128,0.15);
+    background: rgba(15, 23, 42, 0.7);
+    border-color: transparent;
 }
 
-.tour-thumb { position: relative; overflow: hidden; aspect-ratio: 16/11; border-radius: 20px 20px 0 0; }
-.tour-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
-.tour-card-3d:hover .tour-thumb img { transform: scale(1.15); }
-.tour-thumb-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,23,42,1) 0%, transparent 80%); }
+.tour-card-3d:hover::before {
+    opacity: 1;
+}
+
+.tour-thumb { 
+    position: relative; 
+    overflow: hidden; 
+    aspect-ratio: 4/3; 
+    border-radius: 20px; 
+    margin: 8px 8px 0 8px; /* Inner spacing wrapper */
+}
+.tour-thumb img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+}
+.tour-card-3d:hover .tour-thumb img { 
+    transform: scale(1.1) rotate(1deg); 
+}
+.tour-thumb-overlay { 
+    position: absolute; 
+    inset: 0; 
+    background: linear-gradient(to top, rgba(15,23,42,0.9) 0%, rgba(15,23,42,0) 50%); 
+}
 
 .thumb-badge {
-    position: absolute; top: 1rem; left: 1rem;
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.15); color: white;
-    font-size: .7rem; font-weight: 800; padding: .3rem .75rem; border-radius: 20px;
-    letter-spacing: .05em; text-transform: uppercase;
+    position: absolute; top: 0.75rem; left: 0.75rem;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2); color: white;
+    font-size: .65rem; font-weight: 800; padding: .4rem .8rem; border-radius: 99px;
+    letter-spacing: .06em; text-transform: uppercase;
+    z-index: 2;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
-.thumb-badge.popular { background: rgba(239,68,68,0.8); box-shadow: 0 0 10px rgba(239,68,68,0.5); }
-.thumb-badge.new { background: rgba(56,189,248,0.5); box-shadow: 0 0 10px rgba(56,189,248,0.3); }
+.thumb-badge.popular { background: linear-gradient(135deg, #ef4444, #f43f5e); box-shadow: 0 5px 15px rgba(239,68,68,0.4); }
+.thumb-badge.new { background: linear-gradient(135deg, #3b82f6, #06b6d4); box-shadow: 0 5px 15px rgba(59,130,246,0.4); }
 
-.tour-content-3d { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
-.tour-meta-3d { display: flex; align-items: center; gap: 1rem; margin-bottom: .8rem; flex-wrap: wrap; }
-.meta-chip { display: flex; align-items: center; gap: .4rem; font-size: .8rem; color: rgba(255,255,255,0.45); font-weight: 600; }
+.tour-content-3d { 
+    padding: 1.25rem 1.5rem; 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    position: relative;
+    z-index: 2;
+}
+.tour-meta-3d { 
+    display: flex; 
+    align-items: center; 
+    gap: 0.75rem; 
+    margin-bottom: 1rem; 
+    flex-wrap: wrap; 
+}
+.meta-chip { 
+    display: flex; 
+    align-items: center; 
+    gap: .4rem; 
+    font-size: .75rem; 
+    color: #cbd5e1; 
+    font-weight: 600; 
+    background: rgba(255,255,255,0.05);
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
 .meta-chip i { color: #4ade80; font-size: .85rem; }
 
 .tour-title-3d {
-    font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 800;
-    color: #fff; line-height: 1.4; margin-bottom: .8rem;
+    font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800;
+    color: #f8fafc; line-height: 1.4; margin-bottom: 1rem;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     transition: color .3s;
 }
 .tour-card-3d:hover .tour-title-3d { color: #4ade80; }
 
 .tour-footer-3d {
-    margin-top: auto; display: flex; align-items: center; justify-content: space-between;
-    padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06);
+    margin-top: auto; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    padding-top: 1.25rem; 
+    border-top: 1px dashed rgba(255,255,255,0.1);
 }
 
-.price-val-3d { font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 900; color: #4ade80; }
+.price-label { font-size:0.75rem; color:#94a3b8; text-transform:uppercase; margin-bottom:4px; font-weight: 700; letter-spacing: 0.05em; }
+.price-val-3d { font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 900; color: #4ade80; text-shadow: 0 0 20px rgba(74,222,128,0.2); }
 
 .arrow-btn {
-    width: 2.5rem; height: 2.5rem; border-radius: 50%;
-    background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.25);
+    width: 2.75rem; height: 2.75rem; border-radius: 50%;
+    background: rgba(74,222,128,0.15); border: 1px solid rgba(74,222,128,0.3);
     display: flex; align-items: center; justify-content: center;
     color: #4ade80; transition: all .4s cubic-bezier(0.175,0.885,0.32,1.275);
+    font-size: 1.1rem;
 }
-.tour-card-3d:hover .arrow-btn { background: #4ade80; border-color: #4ade80; color: #0f172a; transform: scale(1.1) rotate(45deg); box-shadow: 0 0 15px rgba(74,222,128,0.5); }
+.tour-card-3d:hover .arrow-btn { 
+    background: linear-gradient(135deg, #4ade80, #10b981); 
+    border-color: #4ade80; 
+    color: #0f172a; 
+    transform: scale(1.1) rotate(45deg); 
+    box-shadow: 0 5px 20px rgba(74,222,128,0.5); 
+}
 
 </style>
 @endsection
 
 @section('content')
 
-<div class="container pb-20" style="position:relative; z-index:10; max-width: 1280px; margin: 0 auto; padding: 0 20px;">
+<div class="container pb-20" style="position:relative; z-index:10; max-width: 1280px; margin: 0 auto; padding: 0 20px 100px 20px;">
 
     <!-- Filter Panel -->
     <div class="filter-panel">
@@ -274,7 +349,7 @@
 
                         <div class="tour-footer-3d">
                             <div>
-                                <div style="font-size:0.8rem; color:rgba(255,255,255,0.35); text-transform:uppercase; margin-bottom:3px;">Giá từ</div>
+                                <div class="price-label">Giá từ</div>
                                 <div class="price-val-3d">{{ $tour->gia_nguoi_lon_dinh_dang }}</div>
                             </div>
                             <a href="{{ route('tour.chi-tiet', $tour) }}" class="arrow-btn" title="Xem chi tiết">

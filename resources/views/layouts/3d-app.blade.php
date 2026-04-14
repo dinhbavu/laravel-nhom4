@@ -17,6 +17,8 @@
     @endif
     @yield('css')
 
+    <script>window.APP_ASSET_URL = "{{ rtrim(asset(''), '/') }}/";</script>
+
     <style>
         :root {
             --glass-bg: rgba(15, 23, 42, 0.6);
@@ -271,6 +273,14 @@
             color: rgba(255,255,255,0.7); transition: 0.3s;
         }
         .footer-socials a:hover { background: #4ade80; color: #0f172a; border-color: #4ade80; transform: translateY(-3px); box-shadow: 0 5px 20px rgba(74,222,128,0.4); }
+        
+        /* ========== PAGINATION 3D GLASSMORPHISM ========== */
+        .pagination { display: flex; padding-left: 0; list-style: none; gap: 0.75rem; margin: 0; flex-wrap: wrap; justify-content: center; }
+        .page-item .page-link { position: relative; display: flex; align-items: center; justify-content: center; min-width: 3rem; height: 3rem; padding: 0 1rem; color: #fff; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1rem; text-decoration: none; transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); backdrop-filter: blur(10px); }
+        .page-item:not(.disabled):not(.active) .page-link:hover { background: rgba(74, 222, 128, 0.15); border-color: #4ade80; color: #4ade80; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(74, 222, 128, 0.25); }
+        .page-item.active .page-link, .page-item.active span.page-link { background: linear-gradient(135deg, #4ade80, #10b981); border-color: #4ade80; color: #0f172a; box-shadow: 0 0 20px rgba(74, 222, 128, 0.4); z-index: 2; }
+        .page-item.disabled .page-link, .page-item.disabled span.page-link { color: rgba(255, 255, 255, 0.2); cursor: not-allowed; background: rgba(255, 255, 255, 0.02); border-color: rgba(255, 255, 255, 0.05); box-shadow: none; transform: none; }
+
         /* ========== PRELOADER ========== */
         #preloader-3d {
             position: fixed; inset: 0; z-index: 9999;

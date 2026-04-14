@@ -27,10 +27,11 @@ class Home3D {
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.container.appendChild(this.renderer.domElement);
 
+        const baseUrl = window.APP_ASSET_URL || '/';
         this.images = [
-            '/images/sapa_3d.jpg',
-            '/images/halong_3d.jpg',
-            '/images/hoian_3d.jpg'
+            baseUrl + 'images/sapa_3d.jpg',
+            baseUrl + 'images/halong_3d.jpg',
+            baseUrl + 'images/hoian_3d.jpg'
         ];
         
         this.currentIndex = 0;
