@@ -1,0 +1,35 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # ── Ngăn vòng lặp nếu đã ở trong public/ ──
+    RewriteRule ^public/ - [L]
+
+    # ── Serve static assets từ thư mục public/ ──
+    # CSS files
+    RewriteRule ^css/(.*)$ public/css/$1 [L]
+
+    # JS files
+    RewriteRule ^js/(.*)$ public/js/$1 [L]
+
+    # Images
+    RewriteRule ^images/(.*)$ public/images/$1 [L]
+
+    # Uploads (public storage)
+    RewriteRule ^uploads/(.*)$ public/uploads/$1 [L]
+
+    # Build (Vite assets)
+    RewriteRule ^build/(.*)$ public/build/$1 [L]
+
+    # Favicon & robots
+    RewriteRule ^favicon\.ico$ public/favicon.ico [L]
+    RewriteRule ^robots\.txt$ public/robots.txt [L]
+
+    # ── Tất cả request khác → Laravel index.php ──
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L]
+</IfModule>
