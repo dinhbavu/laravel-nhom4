@@ -45,9 +45,34 @@ document.addEventListener('DOMContentLoaded', function () {
     // ========== CONFIRM DELETE ==========
     document.querySelectorAll('.nut-xoa-confirm').forEach(nut => {
         nut.addEventListener('click', function (e) {
-            if (!confirm('Bạn có chắc chắn muốn thực hiện thao tác này?')) {
-                e.preventDefault();
-            }
+            e.preventDefault();
+            const form = this.closest('form');
+            const href = this.getAttribute('href');
+            Swal.fire({
+                title: 'Xác nhận xóa',
+                text: 'Bạn có chắc chắn muốn thực hiện thao tác này? Hành động này không thể hoàn tác!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Đồng ý xóa',
+                cancelButtonText: 'Hủy bỏ',
+                background: '#ffffff',
+                color: '#1e293b',
+                iconColor: '#ef4444',
+                backdrop: 'rgba(15, 23, 42, 0.4)',
+                customClass: {
+                    popup: 'rounded-2xl border border-slate-200'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (form) {
+                        form.submit();
+                    } else if (href) {
+                        window.location.href = href;
+                    }
+                }
+            });
         });
     });
 

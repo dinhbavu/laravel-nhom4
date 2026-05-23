@@ -12,6 +12,7 @@ class KiemTraQuanTri
      */
     public function handle(Request $request, Closure $next)
     {
+        \Illuminate\Support\Facades\Auth::shouldUse('quan_tri');
         $nguoi_dung = auth()->user();
 
         if (!$nguoi_dung) {

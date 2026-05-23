@@ -12,6 +12,7 @@ class KiemTraKhachHang
      */
     public function handle(Request $request, Closure $next)
     {
+        \Illuminate\Support\Facades\Auth::shouldUse('khach_hang');
         $nguoi_dung = auth()->user();
 
         if (!$nguoi_dung) {
