@@ -23,6 +23,16 @@ use App\Http\Controllers\KhuyenMaiController;
 // Trang chủ
 Route::get('/', [TrangChuController::class, 'index'])->name('trang-chu');
 
+// Route chạy Migrate cho Hosting (InfinityFree)
+Route::get('/run-migrate-hosting', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return 'Chạy migrate thành công! Output: ' . \Illuminate\Support\Facades\Artisan::output();
+    } catch (\Exception $e) {
+        return 'Lỗi: ' . $e->getMessage();
+    }
+});
+
 // Danh sách và chi tiết tour (ai cũng xem được)
 Route::get('/tour', [TourController::class, 'danhSach'])->name('tour.danh-sach');
 Route::get('/tour/{tour}', [TourController::class, 'chiTiet'])->name('tour.chi-tiet');
@@ -37,7 +47,7 @@ Route::get('/cam-nang/{slug}', [\App\Http\Controllers\CamNangController::class, 
 | AUTH KHÁCH HÀNG - Riêng biệt
 |--------------------------------------------------------------------------
 */
-Route::middleware('guest')->group(function () {
+Route::middleware('guest:khach_hang')->group(function () {
     Route::get('/dang-nhap', [DangNhapKhachHangController::class, 'hienThiForm'])->name('dang-nhap');
     Route::post('/dang-nhap', [DangNhapKhachHangController::class, 'dangNhap'])->name('dang-nhap.xu-ly');
     Route::get('/dang-ky', [DangNhapKhachHangController::class, 'hienThiDangKy'])->name('dang-ky');
@@ -70,6 +80,7 @@ Route::middleware('kiem-tra-khach-hang')->prefix('khach-hang')->name('khach-hang
     Route::get('/dat-tour/{dat_tour}/chi-tiet', [DatTourController::class, 'chiTiet'])->name('dat-tour.chi-tiet');
     Route::get('/dat-tour/{dat_tour}/hoa-don', [DatTourController::class, 'hoaDon'])->name('dat-tour.hoa-don');
     Route::post('/dat-tour/{dat_tour}/huy', [DatTourController::class, 'huyTour'])->name('dat-tour.huy');
+    Route::post('/dat-tour/{dat_tour}/yeu-cau-hoan-tien', [DatTourController::class, 'yeuCauHoanTien'])->name('dat-tour.yeu-cau-hoan-tien');
     Route::post('/dat-tour/{dat_tour}/ket-thuc', [DatTourController::class, 'ketThuc'])->name('dat-tour.ket-thuc');
 
     // Thanh toán SePay
@@ -84,15 +95,19 @@ Route::middleware('kiem-tra-khach-hang')->prefix('khach-hang')->name('khach-hang
     Route::get('/yeu-thich', [\App\Http\Controllers\KhachHang\HoSoController::class, 'yeuThich'])->name('yeu-thich');
     Route::post('/tour/{tour}/yeu-thich', [\App\Http\Controllers\KhachHang\HoSoController::class, 'themYeuThich'])->name('yeu-thich.them');
     Route::delete('/tour/{tour}/yeu-thich', [\App\Http\Controllers\KhachHang\HoSoController::class, 'xoaYeuThich'])->name('yeu-thich.xoa');
+    // Thống báo
     Route::get('/thong-bao', [\App\Http\Controllers\KhachHang\HoSoController::class, 'thongBao'])->name('thong-bao');
     Route::get('/thong-bao/{thong_bao}/doc', [\App\Http\Controllers\KhachHang\HoSoController::class, 'danhDauDoc'])->name('thong-bao.doc');
+
+    // Lưu GPS thực tế
+    Route::post('/locate/save-gps', [\App\Http\Controllers\Auth\DangNhapKhachHangController::class, 'luuGps'])->name('locate.save-gps');
 
 });
 
 Route::get('/dang-phat-trien', function() { return view('khach-hang.dang-phat-trien'); })->name('dang-phat-trien');
 
 // Cổng đăng nhập dành riêng cho Admin và Nhân viên
-Route::middleware('guest')->group(function () {
+Route::middleware('guest:quan_tri')->group(function () {
     Route::get('/loginadmin', [DangNhapQuanTriController::class, 'hienThiForm'])->name('quan-tri.dang-nhap');
     Route::post('/loginadmin', [DangNhapQuanTriController::class, 'dangNhap'])->name('quan-tri.dang-nhap.xu-ly');
 });
@@ -147,6 +162,8 @@ Route::prefix('quan-tri')->name('quan-tri.')->group(function () {
             Route::post('/{dat_tour}/duyet', [QuanLyDatTourController::class, 'duyetDatTour'])->name('duyet');
             Route::post('/{dat_tour}/tu-choi', [QuanLyDatTourController::class, 'tuChoiDatTour'])->name('tu-choi');
             Route::post('/{dat_tour}/hoan-thanh', [QuanLyDatTourController::class, 'hoanThanh'])->name('hoan-thanh');
+            Route::post('/{dat_tour}/duyet-hoan-thanh', [QuanLyDatTourController::class, 'duyetHoanThanh'])->name('duyet-hoan-thanh');
+            Route::post('/{dat_tour}/duyet-hoan-tien', [QuanLyDatTourController::class, 'duyetHoanTien'])->name('duyet-hoan-tien');
         });
 
         // Quản lý Khuyến Mãi
@@ -183,6 +200,10 @@ Route::prefix('quan-tri')->name('quan-tri.')->group(function () {
 
         // Quản lý Lịch Sử Đăng Nhập
         Route::get('/lich-su-dang-nhap', [\App\Http\Controllers\QuanTri\LichSuDangNhapController::class, 'danhSach'])->name('lich-su-dang-nhap.danh-sach');
+
+        // Proxy định vị IP (tránh CORS/Mixed Content trên hosting HTTPS)
+        // Dùng /locate/ thay /api/ vì InfinityFree chặn URL chứa "api"
+        Route::get('/locate/ip', [\App\Http\Controllers\QuanTri\LichSuDangNhapController::class, 'locateIp'])->name('locate.ip');
     });
 });
 
