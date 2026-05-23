@@ -16,7 +16,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'web'),
+        'guard' => env('AUTH_GUARD', 'khach_hang'),
         'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
     ],
 
@@ -39,6 +39,14 @@ return [
 
     'guards' => [
         'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+        'quan_tri' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+        'khach_hang' => [
             'driver' => 'session',
             'provider' => 'users',
         ],
