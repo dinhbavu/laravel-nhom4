@@ -7,8 +7,8 @@ CREATE TABLE `audit_log` (
   `hanh_dong` varchar(100) NOT NULL,
   `doi_tuong` varchar(100) DEFAULT NULL,
   `doi_tuong_id` bigint(20) unsigned DEFAULT NULL,
-  `du_lieu_cu` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`du_lieu_cu`)),
-  `du_lieu_moi` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`du_lieu_moi`)),
+  `du_lieu_cu` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `du_lieu_moi` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `dia_chi_ip` varchar(45) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
@@ -233,7 +233,22 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
+(3, '0001_01_01_000000_create_users_table', 1),
+(4, '0001_01_01_000001_create_cache_table', 1),
+(5, '0001_01_01_000002_create_jobs_table', 1),
+(6, '2026_04_09_004810_create_banners_table', 1),
+(7, '2026_04_09_004812_add_phan_tram_giam_gia_to_tours_table', 1),
+(8, '2026_04_09_021316_create_yeu_thich_table', 1),
+(9, '2026_04_09_065340_change_banners_string_limits', 1),
+(10, '2026_04_12_054713_create_lich_su_dang_nhaps_table', 1),
+(11, '2026_04_23_164046_add_gps_to_lich_su_dang_nhap', 1),
+(12, '2026_04_23_164558_add_gps_to_lich_su_dang_nhap_table', 1),
+(13, '2026_04_24_013021_add_device_id_to_lich_su_dang_nhap_table', 1),
+(14, '2026_04_24_024419_update_payment_methods_table', 1),
+(15, '2026_05_23_054328_add_bank_fields_and_update_booking_status', 2);
 
 DROP TABLE IF EXISTS `lich_su_dang_nhap`;
 CREATE TABLE `lich_su_dang_nhap` (
@@ -256,6 +271,9 @@ CREATE TABLE `nguoi_dung` (
   `mat_khau` varchar(255) NOT NULL,
   `so_dien_thoai` varchar(20) DEFAULT NULL,
   `dia_chi` text DEFAULT NULL,
+  `ten_ngan_hang` varchar(100) DEFAULT NULL,
+  `so_tai_khoan` varchar(50) DEFAULT NULL,
+  `ten_tai_khoan` varchar(150) DEFAULT NULL,
   `anh_dai_dien` varchar(255) DEFAULT 'default-avatar.png',
   `vai_tro` enum('khach_hang','nhan_vien','admin') NOT NULL DEFAULT 'khach_hang',
   `trang_thai` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1=hoat dong, 0=khoa',
@@ -294,9 +312,11 @@ CREATE TABLE `thanh_toan` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `dat_tour_id` bigint(20) unsigned NOT NULL,
   `so_tien` decimal(14,0) NOT NULL,
-  `phuong_thuc` enum('vnpay','momo','cod','chuyen_khoan','zalopay','tien_mat') NOT NULL,
+  `phuong_thuc` enum('vnpay','momo','cod','chuyen_khoan','zalopay','tien_mat','dat_coc') NOT NULL,
+  `dia_diem_hen` varchar(255) DEFAULT NULL,
+  `thoi_gian_hen` datetime DEFAULT NULL,
   `ma_giao_dich` varchar(100) DEFAULT NULL,
-  `trang_thai` enum('cho_xu_ly','thanh_cong','that_bai','hoan_tien','da_thanh_toan','da_dat_coc','chua_thanh_toan') NOT NULL DEFAULT 'cho_xu_ly',
+  `trang_thai` enum('cho_xu_ly','thanh_cong','that_bai','hoan_tien','da_thanh_toan','da_dat_coc') NOT NULL DEFAULT 'cho_xu_ly',
   `ghi_chu` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -379,7 +399,7 @@ CREATE TABLE `yeu_thich` (
   CONSTRAINT `yeu_thich_ibfk_2` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `nguoi_dung` (`ho_ten`, `email`, `mat_khau`, `so_dien_thoai`, `vai_tro`, `trang_thai`, `email_verified_at`) VALUES ('Quản Trị Viên', 'admin', '$2y$10$CyOHHNA3zBmOyTj2i1q0gukEriRV2xem7Pf6SjypX524ZJlXizN8S', '0900000001', 'admin', 1, NOW());
+INSERT INTO `nguoi_dung` (`ho_ten`, `email`, `mat_khau`, `so_dien_thoai`, `vai_tro`, `trang_thai`, `email_verified_at`) VALUES ('Quản Trị Viên', 'admin', '$2y$10$luEvEHpjwLq2qgaCDbWOGOu8ncVvaExao1EChE5sdAjQ3SDMTMdiG', '0900000001', 'admin', 1, NOW());
 
 ALTER TABLE `lich_su_dang_nhap` ADD `device_id` VARCHAR(255) NULL DEFAULT NULL AFTER `khach_hang_id`;
 ALTER TABLE `lich_su_dang_nhap` ADD `latitude` DECIMAL(10,8) NULL DEFAULT NULL AFTER `ip_address`;

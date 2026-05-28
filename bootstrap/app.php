@@ -25,5 +25,18 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Illuminate\Session\TokenMismatchException $e, \Illuminate\Http\Request $request) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'message' => 'Phiên làm việc đã hết hạn hoặc trạng thái đăng nhập đã thay đổi ở tab khác. Vui lòng tải lại trang.',
+                    'errors' => [
+                        'csrf' => ['Phiên làm việc đã hết hạn hoặc trạng thái đăng nhập đã thay đổi ở tab khác. Vui lòng tải lại trang.']
+                    ]
+                ], 419);
+            }
+
+            return back()
+                ->withInput($request->except(['mat_khau', 'password', 'password_confirmation', 'mat_khau_confirmation', '_token']))
+                ->withErrors(['session_expired' => 'Phiên làm việc đã hết hạn hoặc trạng thái đăng nhập đã thay đổi ở tab khác. Vui lòng thử lại.']);
+        });
     })->create();

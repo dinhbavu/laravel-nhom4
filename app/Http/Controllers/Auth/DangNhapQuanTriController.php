@@ -43,6 +43,7 @@ class DangNhapQuanTriController extends Controller
         }
 
         Auth::guard('quan_tri')->login($nguoi_dung, $request->boolean('ghi_nho'));
+        $request->session()->regenerate();
 
         return redirect()->intended(route('quan-tri.dashboard'))
             ->with('thanh_cong', 'Đăng nhập thành công! Xin chào, ' . $nguoi_dung->ho_ten);
@@ -52,8 +53,14 @@ class DangNhapQuanTriController extends Controller
     public function dangXuat(Request $request)
     {
         Auth::guard('quan_tri')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        
+        if (!Auth::guard('khach_hang')->check()) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        } else {
+            $request->session()->regenerate();
+        }
+        
         return redirect()->route('quan-tri.dang-nhap')
             ->with('thanh_cong', 'Đăng xuất thành công.');
     }

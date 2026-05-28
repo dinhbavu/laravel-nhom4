@@ -45,6 +45,7 @@ class DangNhapKhachHangController extends Controller
         }
 
         Auth::guard('khach_hang')->login($nguoi_dung, $request->boolean('ghi_nho'));
+        $request->session()->regenerate();
 
         // Lấy IP thực (hỗ trợ cho hosting InfinityFree / Cloudflare)
         $ip = $request->server('HTTP_CF_CONNECTING_IP') ?? 
@@ -135,6 +136,7 @@ class DangNhapKhachHangController extends Controller
         ]);
 
         Auth::guard('khach_hang')->login($nguoi_dung);
+        $request->session()->regenerate();
 
         // Lấy IP thực (hỗ trợ cho hosting InfinityFree / Cloudflare)
         $ip = $request->server('HTTP_CF_CONNECTING_IP') ?? 
@@ -177,8 +179,14 @@ class DangNhapKhachHangController extends Controller
     public function dangXuat(Request $request)
     {
         Auth::guard('khach_hang')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        
+        if (!Auth::guard('quan_tri')->check()) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        } else {
+            $request->session()->regenerate();
+        }
+        
         return redirect()->route('dang-nhap')->with('thanh_cong', 'Bạn đã đăng xuất thành công.');
     }
 
